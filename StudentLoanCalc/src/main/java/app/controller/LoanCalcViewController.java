@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 import javafx.event.ActionEvent;
 import javafx.scene.control.DatePicker;
+import org.apache.poi.ss.formula.functions.FinanceLib;
 
 public class LoanCalcViewController implements Initializable   {
 
@@ -18,9 +19,20 @@ public class LoanCalcViewController implements Initializable   {
 	@FXML
 	private TextField LoanAmount;
 
+	@FXML
+	private TextField InterestRate;
 	
 	@FXML
-	private Label lblTotalPayemnts;
+	private TextField NbrOfYears;
+	
+	@FXML
+	private TextField AdditionalPayment;
+	
+	@FXML
+	private Label lblTotalPayments;
+	
+	@FXML
+	private Label lblTotalInterest;
 	
 	@FXML
 	private DatePicker PaymentStartDate;
@@ -48,7 +60,17 @@ public class LoanCalcViewController implements Initializable   {
 		double dLoanAmount = Double.parseDouble(LoanAmount.getText());
 		System.out.println("Amount: " + dLoanAmount);	
 		
-		lblTotalPayemnts.setText("123");
+		double r = Double.parseDouble(InterestRate.getText()) / 12;
+		double n = Double.parseDouble(NbrOfYears.getText()) * 12;
+		double p = Double.parseDouble(LoanAmount.getText());
+		
+		Double PMT = -((int)(FinanceLib.pmt(r, n, p, 0, false) * 100))/100.0;
+		
+		double tp = PMT * n;
+		
+		lblTotalPayments.setText("" + tp);
+		
+		lblTotalInterest.setText("" + (tp - p));
 		
 		LocalDate localDate = PaymentStartDate.getValue();
 	 
